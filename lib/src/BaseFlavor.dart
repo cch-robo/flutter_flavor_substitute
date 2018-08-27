@@ -66,7 +66,7 @@ class Property {
     _propPath = _getNormalizePath(projectPath + "/", subPath: propPath);
     _propFile = new File(_propPath);
 
-print("Property.forPreBuild  propPath=$propPath, projectPath=$projectPath"); // FIXME
+    print("Property.forPreBuild  propPath=$propPath"); // FIXME プロパティ設定開始・デバッグ出力
     if (!_propFile.existsSync()) {
       _propFile.createSync(recursive: true);
     }
@@ -81,6 +81,7 @@ print("Property.forPreBuild  propPath=$propPath, projectPath=$projectPath"); // 
   /// * require:
   ///   * _propPath プロパティファイルパス
   Property.forApp(propPath, List<String> lines) {
+    print("Property.forApp  propPath=$propPath"); // FIXME プロパティ設定開始・デバッグ出力
     _propPath = propPath;
     _propMap = new Map<String, String>();
     _setProperties(lines, _propMap);
@@ -113,7 +114,6 @@ print("Property.forPreBuild  propPath=$propPath, projectPath=$projectPath"); // 
   }
 
   void _setProperties(List<String> lines, Map<String, String> props) {
-    print("Property  propPath=$_propPath"); // FIXME プロパティ設定開始・デバッグ出力
     if (lines == null || lines.isEmpty) {
       return;
     }
