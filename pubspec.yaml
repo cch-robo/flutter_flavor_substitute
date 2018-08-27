@@ -63,3 +63,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+
+ assets:
+
+    - flavor/flavor.properties
+    - flavor/debug/global.properties
+    - flavor/staging/global.properties
+    - flavor/release/global.properties
