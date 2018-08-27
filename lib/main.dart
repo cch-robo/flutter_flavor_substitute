@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Demo', // FIXME ここを疑似flavor対象にします。
       theme: new ThemeData(
         // This is the theme of your application.
         //
