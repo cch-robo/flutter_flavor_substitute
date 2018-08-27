@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flavor_substitute_sample/src/ApplicationFlavor.dart';
 
-void main() => runApp(new MyApp());
+// FIXME アプリ起動時に、疑似flavorプロパティの設定を追加します。
+void main() async {
+  await FlavorSubstitute.setupProperty();
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo', // FIXME ここを疑似flavor対象にします。
+      title: 'Flutter Demo',
       theme: new ThemeData(
         // This is the theme of your application.
         //
@@ -19,7 +24,7 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new MyHomePage(title: 'Flutter Demo Home Page'), // FIXME ここで擬似flavorプロパティを利用します。
     );
   }
 }
