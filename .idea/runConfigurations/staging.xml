@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="staging" type="FlutterRunConfigurationType" factoryName="Flutter" activateToolWindowBeforeRun="false" singleton="true">
+    <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
+    <method>
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_flavor_staging" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="release" type="FlutterRunConfigurationType" factoryName="Flutter" activateToolWindowBeforeRun="false" singleton="true">
+    <option name="additionalArgs" value="--release" />
+    <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
+    <method>
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_flavor_release" />
+    </method>
+  </configuration>
+</component>
