@@ -62,7 +62,7 @@ class Property {
   /// * require:
   ///   * projectPath プロジェクトディレクトリパス
   ///   * propPath プロパティファイルパス
-  Property.forPreBuild(String projectPath, String propPath) {
+  Property.forDart(String projectPath, String propPath) {
     _propPath = _getNormalizePath(projectPath + "/", subPath: propPath);
     _propFile = new File(_propPath);
 
@@ -80,7 +80,7 @@ class Property {
   ///
   /// * require:
   ///   * _propPath プロパティファイルパス
-  Property.forApp(propPath, List<String> lines) {
+  Property.forFlutter(propPath, List<String> lines) {
     print("Property.forApp  propPath=$propPath"); // FIXME プロパティ設定開始・デバッグ出力
     _propPath = propPath;
     _propMap = new Map<String, String>();

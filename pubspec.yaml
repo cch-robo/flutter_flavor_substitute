@@ -1,5 +1,5 @@
-name: flavor_substitute_sample
-description: Flavor substitute sample project.
+name: flavor_substitute
+description: Flavor substitute project.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -7,7 +7,7 @@ description: Flavor substitute sample project.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.0+1
+version: 0.0.1
 
 dependencies:
   flutter:
@@ -63,9 +63,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
-
-  assets:
-    - flavor/flavor.properties
-    - flavor/debug/global.properties
-    - flavor/staging/global.properties
-    - flavor/release/global.properties

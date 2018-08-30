@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flavor_substitute_sample/src/BaseFlavor.dart';
+import 'package:flavor_substitute/src/flavor/BaseFlavor.dart';
 
 /// # Application Flavor 代用クラス
 ///
@@ -40,7 +40,7 @@ class FlavorSubstitute extends BaseFlavor {
   static FlavorSubstitute _instance;
 
   /// コンストラクタ
-  FlavorSubstitute.forApp() {
+  FlavorSubstitute.forFlutter() {
     if(_instance == null){
       _instance = this;
     }
@@ -52,14 +52,14 @@ class FlavorSubstitute extends BaseFlavor {
     /// 現在の flavor を取得、
     String flavorPropPath = BaseFlavor.flavorSubPath + BaseFlavor.flavorPropName;
     List<String> flavorLines = await _loadAsset(flavorPropPath);
-    _flavorProperty = new Property.forApp(flavorPropPath, flavorLines);
+    _flavorProperty = new Property.forFlutter(flavorPropPath, flavorLines);
     _flavor = _flavorProperty.getProperties()[BaseFlavor.flavorPropKey];
     if (_flavor == null) throw new AssertionError("flavor is missing.");
 
     /// 現在の flavor 環境用のグローバル・プロパティを取得
     String flavorGlobalPath = BaseFlavor.flavorSubPath + _flavor + "/" + BaseFlavor.globalPropName;
     List<String> globalLines = await _loadAsset(flavorGlobalPath);
-    _globalProperty = new Property.forApp(flavorGlobalPath, globalLines);
+    _globalProperty = new Property.forFlutter(flavorGlobalPath, globalLines);
     if (_globalProperty == null) throw new AssertionError("flavor globalProperty missing.");
   }
 
@@ -70,7 +70,7 @@ class FlavorSubstitute extends BaseFlavor {
 
   /// アプリの flavor プロパティ設定を行います。
   static Future<void> setupProperty() async {
-    new FlavorSubstitute.forApp();
+    new FlavorSubstitute.forFlutter();
     await _instance.setup();
   }
 

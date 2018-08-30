@@ -1,0 +1,1 @@
+export 'package:flavor_substitute/src/flavor/ApplicationFlavor.dart';

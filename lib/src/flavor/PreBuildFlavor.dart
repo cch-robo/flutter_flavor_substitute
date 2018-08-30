@@ -1,42 +1,6 @@
 import 'dart:io';
 import 'dart:async';
-import 'lib/src/BaseFlavor.dart';
-
-
-
-/// # PreBuild 用スクリプト
-///
-/// flutter コマンドの --flavor オプションを使った、
-/// Android Studio の Product Flavor や Xcode の Scheme でのビルド設定切り替えの代わりに、
-/// FlavorSubstitute（Flavor 代用）クラスを使って環境ごとのリソース切り替えを行わせるスクリプトです。
-///
-/// リソース切替操作が行なわれるよう、
-/// **ビルド前時** にこのスクリプトを実行させる必要があります。
-///
-/// * ビルド前時のスクリプトには、第一引数に flavor値(例：debug や staging など) を指定してください。
-void main([List<String> args]) async {
-  try {
-    if (args != null && args.length == 1) {
-      // flavor パラメータがある場合
-      new FlavorSubstitute.preBuild(args[0]);
-
-      exitCode = 0;
-    } else {
-      // パラメータ不正の場合
-      stderr.writeln("need to specify flavore as the first argument.");
-      exitCode = 2;
-    }
-  } catch (error) {
-    stderr.writeln('Something went wrong.');
-    stderr.writeln("  type ⇒ ${error?.runtimeType ?? ''}");
-    stderr.writeln("  error ⇒ {\n${error?.toString() ?? ''}\n}");
-    if (error is Error) {
-      stderr.writeln("  stacktrace ⇒ {\n${error?.stackTrace ?? ''}\n}");
-    }
-    rethrow;
-  }
-}
-
+import 'package:flavor_substitute/src/flavor/BaseFlavor.dart';
 
 /// # PreBuild Flavor 代用クラス
 ///
@@ -82,15 +46,27 @@ class FlavorSubstitute extends BaseFlavor {
   /// グローバル・プロパティ
   Property _globalProperty;
 
+  /// リソース上書きインスタンス
+  FlavorSubstitute _resourceOverride;
+
   /// インスタンス
   static FlavorSubstitute _instance;
 
+  /// デフォルトコンストラクタ
+  FlavorSubstitute();
+
   /// ビルド前の flavor 設定を行います。
-  FlavorSubstitute.preBuild(String flavor) {
+  ///
+  /// * require:
+  ///   * flavor フレーバー
+  /// * optional:
+  ///   * resourceOverride リソース上書きを行わせる FlavorSubstitute 継承インスタンス
+  FlavorSubstitute.preBuild(String flavor, {resourceOverride: FlavorSubstitute}) {
     if(_instance == null){
       _flavor = flavor;
       setup();
       _instance = this;
+      _resourceOverride = resourceOverride;
     }
   }
 
@@ -107,7 +83,7 @@ class FlavorSubstitute extends BaseFlavor {
     }
 
     /// flavor プロパティ作成
-    _flavorProperty = new Property.forPreBuild(_projectPath, BaseFlavor.flavorSubPath + BaseFlavor.flavorPropName);
+    _flavorProperty = new Property.forDart(_projectPath, BaseFlavor.flavorSubPath + BaseFlavor.flavorPropName);
     await _flavorProperty.addProperty(BaseFlavor.flavorPropKey, _flavor);
     _switchFlavorProperty();
 
@@ -131,21 +107,12 @@ class FlavorSubstitute extends BaseFlavor {
         (flavorGlobalSub + "/"),
         subPath:(BaseFlavor.globalPropName),
         pathSeparator: "/");
-    _globalProperty = new Property.forPreBuild(_projectPath, flavorGlobalPropPath);
+    _globalProperty = new Property.forDart(_projectPath, flavorGlobalPropPath);
   }
 
   /// Flavor ごとのリソースファイル上書き
   void copyToResources() {
-    final String flavorSubPath = PreBuildFileService.getNormalizePath(BaseFlavor.flavorSubPath, pathSeparator: "/");
-
-    // プロジェクトごとに切替必要かつ可能なリソースが異なるので、
-    // ここでは、Android リソースファイルの切り替えサンプルを示します。
-    final String androidSubPath = PreBuildFileService.getNormalizePath("android/app", subPath: "/src/main/res/values", pathSeparator: "/");
-    final String androidString = "strings.xml";
-
-    // flavor に従って、Android リソースファイルを切り替える
-    SwitchableFlavorResource androidStringResource = SwitchableFlavorResource(_flavor, flavorSubPath, androidSubPath, androidString);
-    androidStringResource.copyTo();
+    if (_resourceOverride != null) _resourceOverride.copyToResources();
   }
 
   /// 現在の flavor
@@ -223,7 +190,7 @@ class PreBuildFileService {
   /// * return:
   ///   * プロジェクトディレクトリ
   static String getProjectDirectory() {
-    // 当該スクリプトが実行される起点パスより、
+    // スクリプトが実行される起点パスより、
     // プロジェクト・パスを推定する。
     String projectPth = Directory.current.path;
     return projectPth;
