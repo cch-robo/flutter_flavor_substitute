@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flavor_substitute_sample/src/ApplicationFlavor.dart';
+import 'package:flavor_substitute/app_lunch.dart';
 
 // FIXME アプリ起動時に、疑似flavorプロパティの設定を追加します。
 void main() async {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: '${FlavorSubstitute.globalProperty.getValue("TITLE_SUFFIX")} Flutter Demo Home Page'), // FIXME 疑似flavorプロパティからサフィックスを取得。
+      home: new MyHomePage(title: '${FlavorSubstitute.globalProperty.getValue("TITLE_PREFIX")} Flutter Demo Home Page'), // FIXME 疑似flavorプロパティからプレフィックスを取得。
     );
   }
 }
