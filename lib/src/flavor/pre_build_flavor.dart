@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:flavor_substitute/src/flavor/BaseFlavor.dart';
+import 'package:flavor_substitute/src/flavor/base_flavor.dart';
 
 /// # PreBuild Flavor 代用クラス
 ///

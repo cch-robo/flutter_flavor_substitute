@@ -1,1 +1,1 @@
-export 'package:flavor_substitute/src/flavor/ApplicationFlavor.dart';
+export 'package:flavor_substitute/src/flavor/application_flavor.dart';
