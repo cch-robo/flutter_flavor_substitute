@@ -27,7 +27,17 @@ import 'dart:async';
 /// flavor ごとのリソースフォルダに global.properties ファイルを作成し、KEY=VALUE 形式でプロパティを記録しておけば、
 /// globalProperty.getProperties()\[KEY\] で、現在の flavor の VALUE が取得できます。
 ///
-/// ## リソースファイル切替の使い方
+/// ## リソースファイルの切替(上書きコピー)を使う場合
+/// flavor ごとに、プラットフォーム側の Android や iOS のリソースファイルを切替(上書きコピー)できます。
+///
+/// flavor ごとに Android や iOS のリソースファイルを切替(上書きコピー)する場合は、
+/// プロジェクトディレクトリの **flavor** サブディレクトリに resource.properties ファイルを作成し、
+/// KEY=VALUE ⇒ プラットフォームリソースファイル相対パス=リソースファイル名 形式でプロパティを記録して、
+/// flavor ごとのリソースフォルダに flavor ごとに変更した内容のリソースファイルを配置しておいてください。
+///
+/// ## リソースファイル切替のユーティリティ
+/// リソースファイル切替(強制上書きコピー)のユーティリティとして、SwitchableFlavorResource クラスを利用しています。
+///
 /// SwitchableFlavorResource は、コンストラクタ引数 flavor, srcSubPath, distSubPath, fileName に従って、
 /// リソースフォルダに flavor ごとのサブディレクトリに配置した fileName のリソースファイルを distSubPath に上書きコピーします。
 ///
