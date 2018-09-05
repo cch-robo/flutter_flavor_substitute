@@ -11,14 +11,21 @@ IntelliJ IDEA 系の Before lunch オプションを使い、
 1. **flavor_substitute ライブラリの導入と事前設定** を行います。
 
 1. **flavor 切替リソース・ディレクトリ** のルートに、  
-**選択flavorプロパティファイル**、**切替リソース設定プロパティファイル** を追加します。
+**選択flavorプロパティファイル**、**切替リソース設定プロパティファイル** を追加します。  
+*選択flavorプロパティファイル名 ⇒ flavor.propterties  
+切替リソース設定ファイル名 ⇒ resource.properties  
+切替リソース設定プロパティフアイルの行フォーマットは、リソースファイル相対パス=ファイル名です。  
+例）`ios/Runner/Info.plist=Info.plist`*
 
 1. **flavor 切替リソース・ディレクトリ** の flavor ごとのサブディレクトリに、  
-flavor ごとに切り替える、**グローバル・プロパティファイル**、**リソースファイル** を用意しておきます。
+flavor ごとに切り替える、**グローバル・プロパティファイル**、**リソースファイル** を用意しておきます。  
+*グローバル・プロパティファイル名 ⇒ grobal.properties  
+リソースファイル名 ⇒ GoogleService-Info.plist など  
+グローバル・プロパティファイルの行フォーマットは、KEY=VALUE 形式です。*
 
 1. 以上のような設定で、  
-疑似 flavor 指定ごとに、接続先サーバや固有アプリ名(バンドルID、アプリケーションID)、  
-および **GoogleService-Info.plist** や **google-service.json** を切り替えられるようにします。
+疑似 flavor 指定ごとに、グローバル・プロパティを使って接続先サーバを切り替えたり、  
+切替リソース設定プロパティとリソースファイルを使って、固有アプリ名(バンドルID、アプリケーションID)や **GoogleService-Info.plist** や **google-service.json** を切り替えられるようにします。
 
 
 *IntelliJ IDEA 系の Before lunch オプションを使わなくても、  
@@ -80,6 +87,36 @@ void main() async {
 
 **プロジェクト・ディレクトリ** に、exampleの `prebuild_main.dart` ファイルをコピーします。
 
+```dart
+import 'dart:io';
+import 'package:flavor_substitute/pre_build.dart';
+
+/// # PreBuild 用スクリプト
+/// 第一引数に flavor値(例：debug や staging など) を指定してください。
+void main([List<String> args]) async {
+  try {
+    if (args != null && args.length == 1) {
+      // flavor パラメータがある場合
+      new FlavorSubstitute.preBuild(args[0]);
+
+      exitCode = 0;
+    } else {
+      // パラメータ不正の場合
+      stderr.writeln("need to specify flavore as the first argument.");
+      exitCode = 2;
+    }
+  } catch (error) {
+    stderr.writeln('Something went wrong.');
+    stderr.writeln("  type ⇒ ${error?.runtimeType ?? ''}");
+    stderr.writeln("  error ⇒ {\n${error?.toString() ?? ''}\n}");
+    if (error is Error) {
+      stderr.writeln("  stacktrace ⇒ {\n${error?.stackTrace ?? ''}\n}");
+    }
+    rethrow;
+  }
+}
+```
+
 
 ### 5. IntelliJ IDEA 系の Before lunch オプションの設定
 
@@ -92,6 +129,45 @@ IntelliJ IDEA 系の Run > Edit Configurations... からの Before lunch オプ�
 [Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs).
 
 
+
+## ライブラリの具体的な利用法
+
+ライブラリの具体的な使い方は、**example ディレクトリ** の各ファイル設定を参考にしてください。
+```
+example/
+ |
+ + prebuild-main.xml （ビルド前リソース切替スクリプト）
+ |
+ + pubspec.yaml （ライブラリの導入とアセット指定を行っている）
+ |
+ + lib/main.dart （疑似flavorプロパティの有効化と、グローバル・プロパティ値の利用を行っている）
+ |
+ + flavor/
+     |
+     + flavor.properties （選択flavorプロパティファイル）
+     + resource.properties （切替リソース設定プロパティファイル）
+     |
+     + debug/ （ｄｅｂｕｇフレーバ用リソース）
+     |  |
+     |  + global.properties （debug用のグローバル・プロパティファイル）
+     |  + Info.plist
+     |  + strings.xml
+     |  + gradle.properties
+     |
+     + staging/ (stagingフレーバ用リソース)
+     |  |
+     |  + global.properties （staging用のグローバル・プロパティファイル）
+     |  + Info.plist
+     |  + strings.xml
+     |  + gradle.properties
+     |
+     + release/ （releaseフレーバー用リソース）
+        |
+        + global.properties （release用のグローバル・プロパティファイル）
+        + Info.plist
+        + strings.xml
+        + gradle.properties
+```
 
 ## example 説明
 
