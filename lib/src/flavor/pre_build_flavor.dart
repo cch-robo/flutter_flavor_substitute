@@ -25,12 +25,16 @@ import 'package:flavor_substitute/src/flavor/base_flavor.dart';
 /// globalProperty.getProperties()\[KEY\] で、現在の flavor の VALUE が取得できます。
 ///
 /// ## リソースファイルの切替(上書きコピー)を使う場合
-/// flavor ごとに Android や iOS のファイルを切替(上書きコピー)する場合は、
-/// FlavorSubstitute を継承したクラスを作り copyToResources を override してください。
+/// flavor ごとに、プラットフォーム側の Android や iOS のリソースファイルを切替(上書きコピー)できます。
 ///
-/// リソースファイル切替(強制上書きコピー)のユーティリティとして、SwitchableFlavorResource クラスが用意されています。
+/// flavor ごとに Android や iOS のリソースファイルを切替(上書きコピー)する場合は、
+/// プロジェクトディレクトリの **flavor** サブディレクトリに resource.properties ファイルを作成し、
+/// KEY=VALUE ⇒ プラットフォームリソースファイル相対パス=リソースファイル名 形式でプロパティを記録して、
+/// flavor ごとのリソースフォルダに flavor ごとに変更した内容のリソースファイルを配置しておいてください。
 ///
-/// ## リソースファイル切替の使い方
+/// ## リソースファイル切替のユーティリティ
+/// リソースファイル切替(強制上書きコピー)のユーティリティとして、SwitchableFlavorResource クラスを利用しています。
+///
 /// SwitchableFlavorResource は、コンストラクタ引数 flavor, srcSubPath, distSubPath, fileName に従って、
 /// リソースフォルダに flavor ごとのサブディレクトリに配置した fileName のリソースファイルを distSubPath に上書きコピーします。
 ///
@@ -43,11 +47,11 @@ class FlavorSubstitute extends BaseFlavor {
   Property _flavorProperty;
   String _flavor;
 
+  /// リソース設定・プロパティ
+  Property _resourceProperty;
+
   /// グローバル・プロパティ
   Property _globalProperty;
-
-  /// リソース上書きインスタンス
-  FlavorSubstitute _resourceOverride;
 
   /// インスタンス
   static FlavorSubstitute _instance;
@@ -59,14 +63,11 @@ class FlavorSubstitute extends BaseFlavor {
   ///
   /// * require:
   ///   * flavor フレーバー
-  /// * optional:
-  ///   * resourceOverride リソース上書きを行わせる FlavorSubstitute 継承インスタンス
-  FlavorSubstitute.preBuild(String flavor, {resourceOverride: FlavorSubstitute}) {
+  FlavorSubstitute.preBuild(String flavor) {
     if(_instance == null){
       _flavor = flavor;
       setup();
       _instance = this;
-      _resourceOverride = resourceOverride;
     }
   }
 
@@ -85,13 +86,18 @@ class FlavorSubstitute extends BaseFlavor {
     /// flavor プロパティ作成
     _flavorProperty = new Property.forDart(_projectPath, BaseFlavor.flavorSubPath + BaseFlavor.flavorPropName);
     await _flavorProperty.addProperty(BaseFlavor.flavorPropKey, _flavor);
+
+    /// flavor ごとのグローバルプロパティ切替
     _switchFlavorProperty();
 
-    /// flavor リソースファイル強制上書きコピー
-    copyToResources();
+    /// リソース設定プロパティ作成
+    _resourceProperty = new Property.forDart(_projectPath, BaseFlavor.flavorSubPath + BaseFlavor.resourcePropName);
+
+    /// flavor ごとのリソースファイル強制上書きコピー
+    _copyToResources();
   }
 
-  /// Flavor ごとのグローバルプロパティ切替
+  /// flavor ごとのグローバルプロパティ切替
   void _switchFlavorProperty() {
     if (_flavor == null) throw AssertionError("flavor is missing.");
 
@@ -111,8 +117,31 @@ class FlavorSubstitute extends BaseFlavor {
   }
 
   /// Flavor ごとのリソースファイル上書き
-  void copyToResources() {
-    if (_resourceOverride != null) _resourceOverride.copyToResources();
+  void _copyToResources() {
+    if (_flavor == null) throw AssertionError("flavor is missing.");
+
+    // 現在の flavor 用のリソースを収めるワークディレクトリを取得
+    String flavorResourceSub = PreBuildFileService
+        .getNormalizePath(BaseFlavor.flavorSubPath, subPath: "", pathSeparator: "/");
+    if (!PreBuildFileService.isDirectoryExist(flavorResourceSub)) {
+      PreBuildFileService.createDirectory(flavorResourceSub);
+    }
+
+    // リソースファイル上書き
+    Map<String,String> resources = _resourceProperty.getProperties();
+    resources.keys.forEach((String key){
+      String distResourceFilePath = key;
+      String distResourceFileName = resources[key];
+      if (distResourceFilePath != null) {
+        if (!PreBuildFileService.isFileExist(distResourceFilePath)) return;
+
+        File resourceFile = PreBuildFileService.getFile(distResourceFilePath);
+        String platformResourceSub = resourceFile.parent.path;
+        String platformResourceName =PreBuildFileService.getFileName(distResourceFilePath);
+        SwitchableFlavorResource resource = new SwitchableFlavorResource(flavor, flavorResourceSub, platformResourceSub, platformResourceName);
+        resource.copyTo();
+      }
+    });
   }
 
   /// 現在の flavor
@@ -209,6 +238,41 @@ class PreBuildFileService {
     String checkPath = getNormalizePath(
         path, subPath: subPath, pathSeparator: pathSeparator);
     return new File(checkPath).existsSync();
+  }
+
+  /// 指定パスのファイルを取得します。
+  ///
+  /// * require:
+  ///   * path パス文字列
+  /// * optional:
+  ///   * subPath パス文字列の追加パス
+  ///   * pathSeparator パス文字列のパス区切り文字（デフォルトは '/'）
+  /// * return:
+  ///   * 取得したファイル
+  static File getFile(String path, {subPath: "", pathSeparator: "/"}) {
+    String filePath = getNormalizePath(
+        path, subPath: subPath, pathSeparator: pathSeparator);
+    File file = new File(filePath);
+    return file;
+  }
+
+  /// 指定パスのファイル名を取得します。
+  ///
+  /// * require:
+  ///   * path パス文字列
+  /// * optional:
+  ///   * subPath パス文字列の追加パス
+  ///   * pathSeparator パス文字列のパス区切り文字（デフォルトは '/'）
+  /// * return:
+  ///   * 取得したファイル名
+  static String getFileName(String path, {subPath: "", pathSeparator: "/"}) {
+    File file = getFile(path, subPath: subPath, pathSeparator: pathSeparator);
+    if (file.existsSync()) {
+      String dirPath = file.parent.path;
+      String fileName = file.path.replaceAll(dirPath, "").replaceFirst(Platform.pathSeparator, "");
+      return fileName;
+    }
+    return null;
   }
 
   /// 指定パスにファイルを作成します。
