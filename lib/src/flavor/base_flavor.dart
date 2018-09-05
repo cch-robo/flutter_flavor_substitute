@@ -33,10 +33,15 @@ import 'dart:async';
 ///
 /// *srcSubPath, disSubPathは、プロジェクトディレクトリからの相対パスを指定します。*
 abstract class BaseFlavor {
-  /// flavor プロパティ
+  /// flavor パス
   static final String flavorSubPath = "flavor/";
+
+  /// flavor プロパティ
   static final String flavorPropName = "flavor.properties";
   static final String flavorPropKey = "FLAVOR";
+
+  /// リソース設定プロパティ
+  static final String resourcePropName = "resouce.properties";
 
   /// グローバル・プロパティ
   static final String globalPropName = "global.properties";
