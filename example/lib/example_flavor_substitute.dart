@@ -28,6 +28,8 @@ class ExampleFlavorSubstitute extends FlavorSubstitute {
     final String androidString = "strings.xml";
 
     // flavor に従って、iOS と Android リソースファイルを切り替える
+    // iOS では、Runner/Info.plist の CFBundleName や CFBundleIdentifier を切り替えるていることに注意
+    // Android では、AndroidManifest.xml の label や app/build.gradle の applicationId を切り替えていることに注意
     SwitchableFlavorResource iosPropertyListResource = new SwitchableFlavorResource(flavor, flavorSubPath, iosSubPath, iosPropertyList);
     iosPropertyListResource.copyTo();
     SwitchableFlavorResource androidGradlePropertiesResource = new SwitchableFlavorResource(flavor, flavorSubPath, androidSubPath, androidGradleProperties);
