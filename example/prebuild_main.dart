@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:flavor_substitute_example/example_flavor_substitute.dart';
+import 'package:flavor_substitute/pre_build.dart';
 
 
 
@@ -18,10 +18,7 @@ void main([List<String> args]) async {
   try {
     if (args != null && args.length == 1) {
       // flavor パラメータがある場合
-
-      // 独自のリソースファイル上書き定義を利用するため、
-      // FlavorSubstitute を継承したクラスでビルド前処理を実行
-      new ExampleFlavorSubstitute.preBuild(args[0]);
+      new FlavorSubstitute.preBuild(args[0]);
 
       exitCode = 0;
     } else {
