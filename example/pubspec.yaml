@@ -21,6 +21,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # 【注意】ライブラリ内サンプルのため相対パスで指定しています。
   flavor_substitute:
     path: ../
 
