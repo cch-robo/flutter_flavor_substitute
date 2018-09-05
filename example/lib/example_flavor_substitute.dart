@@ -19,12 +19,20 @@ class ExampleFlavorSubstitute extends FlavorSubstitute {
     final String flavorSubPath = PreBuildFileService.getNormalizePath(BaseFlavor.flavorSubPath, pathSeparator: "/");
 
     // プロジェクトごとに切替必要かつ可能なリソースが異なるので、
-    // ここでは、Android リソースファイルの切り替えサンプルを示します。
-    final String androidSubPath = PreBuildFileService.getNormalizePath("android/app", subPath: "/src/main/res/values", pathSeparator: "/");
+    // ここでは、iOS と Android リソースファイルの切り替えサンプルを示します。
+    final String iosSubPath = PreBuildFileService.getNormalizePath("ios", subPath: "/Runner", pathSeparator: "/");
+    final String iosPropertyList = "Info.plist";
+    final String androidSubPath = PreBuildFileService.getNormalizePath("android", subPath: "/", pathSeparator: "/");
+    final String androidGradleProperties = "gradle.properties";
+    final String androidResSubPath = PreBuildFileService.getNormalizePath("android", subPath: "/app/src/main/res/values", pathSeparator: "/");
     final String androidString = "strings.xml";
 
-    // flavor に従って、Android リソースファイルを切り替える
-    SwitchableFlavorResource androidStringResource = new SwitchableFlavorResource(flavor, flavorSubPath, androidSubPath, androidString);
+    // flavor に従って、iOS と Android リソースファイルを切り替える
+    SwitchableFlavorResource iosPropertyListResource = new SwitchableFlavorResource(flavor, flavorSubPath, iosSubPath, iosPropertyList);
+    iosPropertyListResource.copyTo();
+    SwitchableFlavorResource androidGradlePropertiesResource = new SwitchableFlavorResource(flavor, flavorSubPath, androidSubPath, androidGradleProperties);
+    androidGradlePropertiesResource.copyTo();
+    SwitchableFlavorResource androidStringResource = new SwitchableFlavorResource(flavor, flavorSubPath, androidResSubPath, androidString);
     androidStringResource.copyTo();
   }
 }
