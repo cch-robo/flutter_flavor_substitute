@@ -10,7 +10,7 @@ IntelliJ IDEA 系の Before lunch オプションを使い、
 
 1. **flavor_substitute ライブラリの導入と事前設定** を行います。
 
-1. **flavor 切替リソース・ディレクトリ** のルートに、  
+1. **flavor 切替リソース・ディレクトリ** を新設し、  
 **選択flavorプロパティファイル**、**切替リソース設定プロパティファイル** を追加します。  
 *選択flavorプロパティファイル名 ⇒ flavor.propterties  
 切替リソース設定ファイル名 ⇒ resource.properties  
@@ -142,26 +142,26 @@ example/
  |
  + lib/main.dart （疑似flavorプロパティの有効化と、グローバル・プロパティ値の利用を行っている）
  |
- + flavor/
+ + flavor/ (flavor切替リソース・ディレクトリ)
      |
      + flavor.properties （選択flavorプロパティファイル）
      + resource.properties （切替リソース設定プロパティファイル）
      |
-     + debug/ （ｄｅｂｕｇフレーバ用リソース）
+     + debug/ （ｄｅｂｕｇフレーバ・リソース用サブディレクトリ）
      |  |
      |  + global.properties （debug用のグローバル・プロパティファイル）
      |  + Info.plist
      |  + strings.xml
      |  + gradle.properties
      |
-     + staging/ (stagingフレーバ用リソース)
+     + staging/ (stagingフレーバ・リソース用サブディレクトリ)
      |  |
      |  + global.properties （staging用のグローバル・プロパティファイル）
      |  + Info.plist
      |  + strings.xml
      |  + gradle.properties
      |
-     + release/ （releaseフレーバー用リソース）
+     + release/ （releaseフレーバー・リソース用サブディレクトリ）
         |
         + global.properties （release用のグローバル・プロパティファイル）
         + Info.plist
