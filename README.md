@@ -22,7 +22,8 @@ flavor ごとに切り替える、**グローバル・プロパティファイ�
 
 
 *IntelliJ IDEA 系の Before lunch オプションを使わなくても、  
-`$ flutter run` を実行する前に、`$ dart prebuild_main.dart debug` のように **ビルド前リソース切替スクリプト** を実行させれば、同様の効果が得られます。*
+`$ flutter run` を実行する前に、`$ dart prebuild_main.dart debug` のように  
+**ビルド前リソース切替スクリプト** を事前に実行させれば、同様の効果が得られます。*
 
 
 
@@ -85,7 +86,7 @@ void main() async {
 疑似 flavor ごとの **ビルド前リソース切替スクリプト** が実行できるよう、  
 IntelliJ IDEA 系の **Before lunch** オプションを設定します。
 
-IntelliJ IDEA 系の Run > Edit Configurations... からの **Before lunch** オプションの設定については、  
+IntelliJ IDEA 系の Run > Edit Configurations... からの Before lunch オプションの設定については、  
 以下の資料を参照ください。
 
 [Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs).
@@ -95,7 +96,8 @@ IntelliJ IDEA 系の Run > Edit Configurations... からの **Before lunch** オ
 ## example 説明
 
 example では、flavor (debug/staging/release)ごとに、  
-アプリ名(iOS⇒バンドルID, Android⇒applicationId)と、画面タイトル(グローバル・プロパティのTITLE_PREFIX)が切り替わります。
+アプリ名(iOS⇒バンドルID, Android⇒applicationId)と、  
+画面タイトル(グローバル・プロパティのTITLE_PREFIX)が切り替わります。
 
 iOS と Android における切り替えリソースと設定の違いは、下記のようになっています。
 
