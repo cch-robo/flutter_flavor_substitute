@@ -6,7 +6,14 @@ Flutter 疑似 flavor ライブラリ.
 ## ライブラリの概要
 
 IntelliJ IDEA 系の Before lunch オプションを使い、  
-疑似 flavor 指定による debug/staging/release環境 ごとにリソースを切り替えるコンセプト・ライブラリです。
+flutterアプリのビルドと起動の前に、引数にflavor値を擬似的に指定した dart スクリプトを実行させて、  
+flavor指定ごとのプロパティリソース切替や、ネイティブ・リソースファイルへの上書きコピーを行なって、  
+疑似flavor指定による debug/staging/release環境 ごとにリソースを切り替えるコンセプト・ライブラリです。
+
+Before lunch と flavor 疑似指定を使って、サーバ接続先などのプロパティリソースの切替などを行なわせます。
+
+
+**コンセプト・ライブラリを利用する手順（順不同）**
 
 1. **flavor_substitute ライブラリの導入と事前設定** を行います。
 
@@ -83,7 +90,25 @@ void main() async {
 ```
 
 
-### 4. ビルド前リソース切替スクリプトの設置
+### 4. プロパティ値取得の追加
+
+FlavorSubstitute.globalProperty.getValue(キー名) を追加して、flavor ごとのプロパティ値を取得してください。
+
+```dart
+import 'package:flavor_substitute/app_lunch.dart';
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key}) : super(key: key);
+  // キー名’TITLE’を指定して、疑似flavoreごとのグローバル・プロパティからタイトル名を取得するサンプル。
+  final String title = '${FlavorSubstitute.globalProperty.getValue("TITLE")}';
+  
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
+```
+
+
+### 5. ビルド前リソース切替スクリプトの設置
 
 **プロジェクト・ディレクトリ** に、exampleの `prebuild_main.dart` ファイルをコピーします。
 
@@ -118,21 +143,51 @@ void main([List<String> args]) async {
 ```
 
 
-### 5. IntelliJ IDEA 系の Before lunch オプションの設定
+### 6. IntelliJ IDEA 系の Before lunch オプションの設定
 
 疑似 flavor ごとの **ビルド前リソース切替スクリプト** が実行できるよう、  
 IntelliJ IDEA 系の **Before lunch** オプションを設定します。
+
+**example**を実行するための疑似flavore(debug/staging/release)設定
+
+1. dart コマンドへのパスが通っているか確認してください。  
+Before lunch オプションで、`prebuild_main.dart`スクリプトを実行するには、dart コマンドが必要です。  
+ターミナルから**exampleディレクトリ**で`$ dart --version`を実行して、dart コマンドへのパスを確認してください。
+
+1. **Run/Debug Configuration ダイアログ**で、３つのビルド構成(debug/staging/release)を作成します。  
+Dart entrypoint には、example/lib/main.dart へのパスを設定します。  
+release のみ Additionl arguments で `--release` を設定します。
+
+1. **Run/Debug Configuration ダイアログ**で、３つのビルド構成(debug/staging/release)を作成します。
+
+1. 各ビルド構成の **Before lunch** 項目の **＋** アイコンで、 Run Extarnal tool を追加します。
+
+1. **External Tools ダイアログ** の **＋** アイコンで、Create Tool ダイアログを開きます。
+
+1. **Create Tool ダイアログ** で、３つの Extarnal Tools 設定を行います。  
+  * Name ⇒ それぞれに flavore_debug, flavor_staging, flavor_release を設定  
+  * Group ⇒ それぞれに `External Tools` を設定  
+  * Program ⇒ それぞれに `dart` を設定  
+  * Arguments ⇒ flavor_debugの場合は、`prebuiold_main.dart debug`を設定  
+  * Working directory ⇒ それぞれに `$ProjectFileDir$/example` を設定  
+  * その他の設定 ⇒ Show in ~ Search result および Advanced Options の全オプションにチェックをいれます。
 
 IntelliJ IDEA 系の Run > Edit Configurations... からの Before lunch オプションの設定については、  
 以下の資料を参照ください。
 
 [Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs).
 
+*IntelliJ IDEA 系の Before lunch オプションを使わなくても、  
+`$ flutter run` を実行する前に、`$ dart prebuild_main.dart debug` のように  
+**ビルド前リソース切替スクリプト** を事前に実行させれば、同様の効果が得られます。*
 
 
-## ライブラリの具体的な利用法
 
-ライブラリの具体的な使い方は、**example ディレクトリ** の各ファイル設定を参考にしてください。
+## example 構成
+
+ライブラリ・クラスの使い方や、切替リソース設定プロパティおよびリソースファイルの具体的な配置については、  
+**example ディレクトリ** の各ファイルを参考にしてください。
+
 ```
 example/
  |
@@ -178,12 +233,14 @@ example では、flavor (debug/staging/release)ごとに、
 iOS と Android における切り替えリソースと設定の違いは、下記のようになっています。
 
 * iOS
-ios/Runner/Info.plist の CFBundleIdentifier キーでバンドルID、CFBundleName キーでアプリ名を切り替えています。
+ios/Runner/Info.plist の CFBundleIdentifier キーでバンドルID、  
+CFBundleName キーでアプリ名を切り替えています。
 
 * Android
-android/gradle.properties の flavorApplicationI プロパティでアプリケーションID(アプリパッケージ名)、
+android/gradle.properties の flavorApplicationI プロパティでアプリケーションID(アプリパッケージ名)、  
 android/app/src/main/res/string.xml の app_name でアプリ名を切り替えています。
-  * android/app/build.gradle の applicationId と android/app/src/main/AndroidManifest.xml の label で、切り替えリソースを参照していることに注意。
+  * android/app/build.gradle の applicationId と android/app/src/main/AndroidManifest.xml の label で、  
+切り替えリソースを参照していることに注意。
 
 
 
