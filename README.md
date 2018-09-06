@@ -175,7 +175,7 @@ release のみ Additionl arguments で `--release` を設定します。
 IntelliJ IDEA 系の Run > Edit Configurations... からの Before lunch オプションの設定については、  
 以下の資料を参照ください。
 
-[Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs).
+[Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs)
 
 *IntelliJ IDEA 系の Before lunch オプションを使わなくても、  
 `$ flutter run` を実行する前に、`$ dart prebuild_main.dart debug` のように  
@@ -252,4 +252,4 @@ IntelliJ IDEA 系の Run > Edit Configurations... からの Before lunch オプ�
 
 [Flutter Meetup Tokyo #4](https://flutter-jp.connpass.com/event/95835/)
 
-[Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs).
+[Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs)
