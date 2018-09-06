@@ -158,8 +158,6 @@ Before lunch オプションで、`prebuild_main.dart`スクリプトを実行�
 Dart entrypoint には、example/lib/main.dart へのパスを設定します。  
 release のみ Additionl arguments で `--release` を設定します。
 
-1. **Run/Debug Configuration ダイアログ**で、３つのビルド構成(debug/staging/release)を作成します。
-
 1. 各ビルド構成の **Before lunch** 項目の **＋** アイコンで、 Run Extarnal tool を追加します。
 
 1. **External Tools ダイアログ** の **＋** アイコンで、Create Tool ダイアログを開きます。
