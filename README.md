@@ -250,4 +250,6 @@ Flutter における、ビルド構成切り替えの基本や問題点や、当
 IntelliJ IDEA 系の Run > Edit Configurations... からの Before lunch オプションの設定については、  
 以下の資料を参照ください。
 
+[Flutter Meetup Tokyo #4](https://flutter-jp.connpass.com/event/95835/)
+
 [Before lunch オプションを使って Flutterでstaging/release環境を切り替える](https://drive.google.com/open?id=18y34btiLo8HUXDcn7Z3UufXqvNElFYPlZ9Cou1kFnCs).
