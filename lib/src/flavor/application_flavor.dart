@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flavor_substitute/src/flavor/base_flavor.dart';
+import 'package:flutter/widgets.dart';
 
 /// # Application Flavor 代用クラス
 ///
@@ -64,7 +65,13 @@ class FlavorSubstitute extends BaseFlavor {
   }
 
   Future<List<String>> _loadAsset(String propAssetPath) async {
-    String lines =  await rootBundle.loadString(propAssetPath);
+    String lines;
+    try {
+      lines =  await rootBundle.loadString(propAssetPath);
+    } on FlutterError catch(err) {
+      // リソースを取得できなかった場合は、空リストを返す。
+      return <String>[];
+    }
     return lines.split("\n").toList();
   }
 
@@ -79,4 +86,10 @@ class FlavorSubstitute extends BaseFlavor {
 
   /// 現在の flavor 用のグローバル・プロパティ
   static Property get globalProperty => _instance._globalProperty;
+
+  /// 任意の assets リソースから、プロパティを作成する。
+  static Future<Property> createProperty(String assetPath) async {
+    final List<String> lines = await _instance._loadAsset(assetPath);
+    return new Property.forFlutter(assetPath, lines);
+  }
 }
